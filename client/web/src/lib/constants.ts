@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://localhost:8000'
+export const BASE_URL = 'https://authkit-b533.onrender.com'
 
 export const ROUTES = {
   ROOT: '/',
