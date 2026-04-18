@@ -1,5 +1,4 @@
 from fastapi import APIRouter, HTTPException, Response
-from fastapi.responses import ORJSONResponse
 
 from server.src.app.routers.authentication.cookie_policy import remove_session_cookie, set_device_cookie, set_session_cookie
 from server.src.app.routers.classes.authentication_classes import AuthenticatedUserResponse, CompleteDeletionRequest, CompleteEmailChangeRequest, CompleteLoginRequest, CompleteLogoutRequest, CompletePasswordChangeRequest, CompletePasswordResetRequest, CompleteSignupRequest, DeleteDevicesRequest, EmailHashResponse, InitiateDeletionRequest, InitiateEmailChangeRequest, InitiateLoginRequest, InitiatePasswordResetRequest, InitiateSignupRequest, MobileAuthResponse, OAuthCallbackRequest, OAuthInitiateResponse, ResendOtpAuthenticatedRequest, ResendOtpPublicRequest, ResetTokenResponse, SessionResponse, UserDeviceItem, UserDevicesResponse, UserIdResponse, UserProfileResponse, UserSessionItem, UserSessionsResponse, VerifyPasswordResetRequest
@@ -28,7 +27,7 @@ from server.src.logic.authentication.shared.ui.get_auth_functions import get_use
 from server.src.logic.authentication.signup.complete_signup import complete_signup
 from server.src.logic.authentication.signup.initiate_signup import initiate_signup
 
-router = APIRouter(prefix="/v1", default_response_class=ORJSONResponse)
+router = APIRouter(prefix="/v1")
 
 # --- Signup ---
 

@@ -1,7 +1,6 @@
 from uuid import UUID
 
 from fastapi import APIRouter
-from fastapi.responses import ORJSONResponse
 
 from server.src.app.routers.classes.base import BaseResponse
 from server.src.app.routers.classes.billing_classes import CreateCheckoutSessionRequest, CreateCheckoutSessionResponse, UpgradePlanRequest
@@ -35,7 +34,7 @@ from server.src.logic.core.projects.create_project import create_project
 from server.src.logic.core.projects.delete_project import delete_project
 from server.src.logic.core.projects.edit_project import edit_project
 
-router = APIRouter(prefix="/v1", default_response_class=ORJSONResponse)
+router = APIRouter(prefix="/v1")
 
 # --- Core Reads ---
 

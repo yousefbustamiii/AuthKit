@@ -143,7 +143,7 @@ class Settings(BaseSettings):
 
     @cached_property
     def cors_allowed_origins(self) -> list[str]:
-        return ["https://authkitclient.pages.dev"]
+        return ["https://authkitclient.onrender.com"]
 
     @cached_property
     def google(self) -> GoogleConfig:

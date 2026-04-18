@@ -18,7 +18,7 @@ from server.src.logic.core.billing.webhooks.idempotency import release_event_cla
 
 logger = get_logger(__name__)
 
-router = APIRouter(prefix="/v1", default_response_class=ORJSONResponse)
+router = APIRouter(prefix="/v1")
 
 @router.post("/core/billing/stripe")
 async def stripe_webhook(request: Request, pool: PoolDep, cache: RedisDep):
