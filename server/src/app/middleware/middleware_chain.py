@@ -51,6 +51,8 @@ class MiddlewareChain:
         async def custom_receive():
             return {"type": "http.request", "body": bytes(body_payload), "more_body": False}
 
+        request = Request(scope, custom_receive)
+
         try:
             if method in ("POST", "PUT", "PATCH"):
                 max_bytes = endpoint_config.max_body_bytes if endpoint_config else 1024
@@ -77,8 +79,6 @@ class MiddlewareChain:
 
                     body_payload.extend(chunk)
                     more_body = message.get("more_body", False)
-
-            request = Request(scope, custom_receive)
 
             if method == "OPTIONS":
                 response = handle_cors_preflight(origin)

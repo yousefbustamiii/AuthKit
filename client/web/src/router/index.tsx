@@ -87,8 +87,8 @@ export const router = createBrowserRouter([
           { path: 'settings/delete', element: <DeleteAccountPage /> },
         ],
       },
-      { path: ROUTES.BILLING_SUCCESS, element: <BillingSuccessPage /> },
-      { path: ROUTES.BILLING_CANCEL, element: <BillingCancelPage /> },
     ],
   },
+  { path: ROUTES.BILLING_SUCCESS, element: <BillingSuccessPage /> },
+  { path: ROUTES.BILLING_CANCEL, element: <BillingCancelPage /> },
 ])
