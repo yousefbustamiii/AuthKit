@@ -63,8 +63,8 @@ class StripeConfig:
     price_id_plan_1: str
     price_id_plan_2: str
     price_id_plan_3: str
-    success_url: str = "https://authkitclient.pages.dev/billing/success"
-    cancel_url: str = "https://authkitclient.pages.dev/billing/cancel"
+    success_url: str = "https://authkitclient.onrender.com/billing/success"
+    cancel_url: str = "https://authkitclient.onrender.com/billing/cancel"
 
 class Settings(BaseSettings):
     model_config = ConfigDict(ignored_types=(cached_property,), env_file=Path(__file__).resolve().parents[3] / ".env")
