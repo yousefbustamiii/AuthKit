@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+  <body style="margin:0; padding:0; background-color:#f5f7fa;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="padding:60px 0;">
+      <tr>
+        <td align="center">
+          <table width="420" cellpadding="0" cellspacing="0"
+                 style="background-color:#ffffff; padding:48px 32px; text-align:center; border-radius:10px; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">
+            <tr>
+              <td style="font-size:20px; font-weight:600; color:#111111; padding-bottom:18px;">
+                Welcome to {{ app_name }}
+              </td>
+            </tr>
+            <tr>
+              <td style="font-size:15px; color:#444444; line-height:22px; padding-bottom:32px;">
+                Thanks for signing up.  
+                To complete your account setup, enter the verification code below.
+              </td>
+            </tr>
+            <tr>
+              <td style="font-size:42px; font-weight:500; letter-spacing:8px; color:#000000; padding:24px 0;">
+                {{ otp }}
+              </td>
+            </tr>
+            <tr>
+              <td style="font-size:14px; color:#666666; padding-top:8px;">
+                This code expires in {{ otp_expire_minutes }} minutes.
+              </td>
+            </tr>
+            <tr>
+              <td style="font-size:14px; color:#666666; padding-top:32px;">
+                Request details
+              </td>
+            </tr>
+            <tr>
+              <td style="font-size:15px; font-weight:500; color:#111111; padding-top:8px;">
+                {{ device }}
+              </td>
+            </tr>
+            <tr>
+              <td style="font-size:15px; font-weight:500; color:#111111; padding-top:6px;">
+                {{ country }}
+              </td>
+            </tr>
+            <tr>
+              <td style="font-size:15px; font-weight:500; color:#111111; padding-top:6px; padding-bottom:32px;">
+                {{ timestamp }}
+              </td>
+            </tr>
+            <tr>
+              <td style="font-size:13px; color:#999999; padding-top:36px; line-height:18px;">
+                If you did not create this account, you can safely ignore this email.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

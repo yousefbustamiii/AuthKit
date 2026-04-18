@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<body style="margin:0; padding:0; background-color:#f5f7fa;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="padding:60px 0;">
+        <tr>
+            <td align="center">
+                <table width="420" cellpadding="0" cellspacing="0"
+                    style="background-color:#ffffff; padding:48px 32px; text-align:center; border-radius:10px; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">
+                    <tr>
+                        <td style="font-size:20px; font-weight:600; color:#111111; padding-bottom:18px;">
+                            Payment received
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:15px; color:#444444; line-height:22px; padding-bottom:32px;">
+                            A payment has been successfully processed for the <strong>{{ org_name }}</strong>
+                            subscription on <strong>{{ app_name }}</strong>.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:14px; color:#666666; padding-bottom:6px;">
+                            Amount
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:15px; font-weight:500; color:#111111; padding-bottom:18px;">
+                            {{ amount }} {{ currency }}
+                        </td>
+                    </tr>
+                    {% if invoice_url %}
+                    <tr>
+                        <td style="padding-bottom:24px;">
+                            <a href="{{ invoice_url }}"
+                                style="display:inline-block; background-color:#111111; color:#ffffff; font-size:14px; font-weight:500; padding:12px 28px; border-radius:6px; text-decoration:none;">
+                                View Invoice
+                            </a>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td style="font-size:14px; color:#666666; padding-bottom:6px;">
+                            Processed by
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:15px; font-weight:500; color:#111111; padding-bottom:18px;">
+                            {{ device }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:14px; color:#666666; padding-bottom:6px;">
+                            Time
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:15px; font-weight:500; color:#111111; padding-bottom:32px;">
+                            {{ timestamp }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:13px; color:#999999; line-height:18px;">
+                            If you did not authorize this payment, please contact support immediately.
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

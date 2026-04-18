@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+pydantic-settings
+pydantic
+cryptography
+asyncpg
+redis[hiredis]
+httpx[http2]
+orjson
+argon2-cffi
+passlib[argon2]
+user-agents
+jinja2
+uvloop
+cachetools
+maxminddb
+stripe==11.4.1

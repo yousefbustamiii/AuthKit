@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<body style="margin:0; padding:0; background-color:#f5f7fa;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="padding:60px 0;">
+        <tr>
+            <td align="center">
+                <table width="420" cellpadding="0" cellspacing="0"
+                    style="background-color:#ffffff; padding:48px 32px; text-align:center; border-radius:10px; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">
+                    <tr>
+                        <td style="font-size:20px; font-weight:600; color:#111111; padding-bottom:18px;">
+                            Subscription activated
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:15px; color:#444444; line-height:22px; padding-bottom:32px;">
+                            The <strong>{{ org_name }}</strong> subscription on <strong>{{ app_name }}</strong> is now active.
+                            Your first billing cycle ends on <strong>{{ next_billing_date }}</strong>.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:14px; color:#666666; padding-bottom:6px;">
+                            Plan
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:15px; font-weight:500; color:#111111; padding-bottom:18px;">
+                            {{ plan }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:14px; color:#666666; padding-bottom:6px;">
+                            Next billing date
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:15px; font-weight:500; color:#111111; padding-bottom:18px;">
+                            {{ next_billing_date }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:14px; color:#666666; padding-bottom:6px;">
+                            Processed by
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:15px; font-weight:500; color:#111111; padding-bottom:18px;">
+                            {{ device }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:14px; color:#666666; padding-bottom:6px;">
+                            Time
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:15px; font-weight:500; color:#111111; padding-bottom:32px;">
+                            {{ timestamp }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:13px; color:#999999; line-height:18px;">
+                            If you did not make this change, please contact support immediately.
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>
