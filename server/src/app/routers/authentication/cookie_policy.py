@@ -2,23 +2,24 @@ from fastapi import Response
 
 from server.src.app.config.settings import settings
 
-DEVICE_COOKIE_OPTS = dict(
+COOKIE_OPTS = dict(
     httponly=True,
-    secure=True,
-    samesite="lax",
+    secure=settings.session.cookie_secure,
+    samesite=settings.session.cookie_samesite,
     path="/",
+)
+
+DEVICE_COOKIE_OPTS = dict(
+    **COOKIE_OPTS,
 )
 
 def set_session_cookie(response: Response, token: str, expires_at) -> None:
     response.set_cookie(
         key="X-Session-Token",
         value=token,
-        httponly=True,
-        secure=True,
-        samesite="lax",
         expires=expires_at,
         max_age=settings.session.expire_days * 24 * 60 * 60,
-        path="/",
+        **COOKIE_OPTS,
     )
 
 def set_device_cookie(response: Response, token: str) -> None:
@@ -30,4 +31,9 @@ def set_device_cookie(response: Response, token: str) -> None:
     )
 
 def remove_session_cookie(response: Response) -> None:
-    response.delete_cookie(key="X-Session-Token", path="/")
+    response.delete_cookie(
+        key="X-Session-Token",
+        path="/",
+        secure=settings.session.cookie_secure,
+        samesite=settings.session.cookie_samesite,
+    )

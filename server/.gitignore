@@ -8,3 +8,4 @@ venv/
 .DS_Store
 .mmdb
 .pyc
+codebase_bundle.txt

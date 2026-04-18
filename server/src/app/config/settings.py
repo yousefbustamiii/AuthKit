@@ -2,6 +2,7 @@ import base64
 from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
+from typing import Literal
 
 from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
@@ -31,6 +32,8 @@ class OTPConfig:
 @dataclass
 class SessionConfig:
     expire_days: int
+    cookie_secure: bool
+    cookie_samesite: Literal["lax", "strict", "none"]
 
 @dataclass
 class GoogleConfig:
@@ -123,7 +126,11 @@ class Settings(BaseSettings):
 
     @cached_property
     def session(self) -> SessionConfig:
-        return SessionConfig(expire_days=60)
+        return SessionConfig(
+            expire_days=60,
+            cookie_secure=True,
+            cookie_samesite="none",
+        )
 
     @cached_property
     def aes_key(self) -> bytes:
