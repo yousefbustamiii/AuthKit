@@ -62,7 +62,10 @@ async def get_organization_billing(conn: Connection, organization_id: UUID) -> O
         FROM subscriptions
         WHERE organization_id = $1
           AND is_deleted = FALSE
-        ORDER BY created_at DESC
+        ORDER BY
+            CASE WHEN status IN ('canceled', 'incomplete_expired') THEN 1 ELSE 0 END,
+            updated_at DESC,
+            created_at DESC
         LIMIT 1
         """,
         organization_id,

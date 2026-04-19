@@ -280,7 +280,6 @@ export async function billing_checkout(
 export async function billing_cancel(organization_id: string, idempotency_key: string): Promise<BaseResponse> {
   return api_request<BaseResponse>(`${CORE}/organizations/${organization_id}/billing/cancel`, {
     method: 'POST',
-    body: {},
     idempotency_key,
   })
 }
