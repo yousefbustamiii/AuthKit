@@ -75,8 +75,6 @@ export function PasswordResetVerifyPage() {
           </InputOTP>
         </div>
 
-        <ErrorAlert message={error} />
-
         <Button
           className="w-full h-10 font-medium bg-primary text-primary-foreground hover:bg-primary/90"
           onClick={() => submit_otp(otp)}
@@ -84,6 +82,8 @@ export function PasswordResetVerifyPage() {
         >
           {loading ? <LoadingSpinner size="sm" className="mr-2" /> : "Verify code"}
         </Button>
+
+        <ErrorAlert message={error} />
       </div>
     </div>
   )

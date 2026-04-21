@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-import { KeyRound, MoreHorizontal, Pencil, Plus, RefreshCcw, Trash2 } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { KeyRound, MoreHorizontal, Pencil, Plus, RefreshCcw, Shield, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -71,160 +70,172 @@ export function OrganizationProjectsPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader className="pb-4">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <CardTitle className="text-base font-medium">Projects</CardTitle>
-              <CardDescription>{projects.length} projects in this organization.</CardDescription>
-            </div>
-            {can_manage && (
-              <Button onClick={() => { set_dialog_mode('create'); set_name('') }}>
-                <Plus className="h-4 w-4" />
-                New project
-              </Button>
-            )}
+    <div className="space-y-6 max-w-5xl">
+       <div className="flex items-center justify-between mb-4">
+          <div>
+             <h3 className="text-[13px] font-bold uppercase tracking-[0.05em] text-muted-foreground/60">Projects ({projects.length})</h3>
+             <p className="text-[11px] text-muted-foreground mt-0.5">Manage API access and keys for your applications.</p>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {loading ? (
-            <div className="flex items-center justify-center py-12"><LoadingSpinner size="lg" /></div>
-          ) : projects.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No projects yet.</p>
-          ) : (
-            projects.map((project) => {
-              const api_keys = api_keys_by_project[project.project_id] ?? EMPTY_API_KEYS
-              const expanded = expanded_project_id === project.project_id
-
-              return (
-                <div key={project.project_id} className="rounded-lg border">
-                  <div className="flex items-center justify-between gap-4 p-4">
-                    <div>
-                      <p className="text-sm font-medium">{project.name}</p>
-                      <p className="mt-1 text-sm text-muted-foreground">{api_keys.length} API keys loaded</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button variant="outline" onClick={() => toggle_project(project.project_id)}>
-                        <KeyRound className="h-4 w-4" />
-                        {expanded ? 'Hide API keys' : 'Manage API keys'}
-                      </Button>
-                      {can_manage && (
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => { set_dialog_mode('rename'); set_active_project(project); set_name(project.name) }}>
-                              <Pencil className="h-4 w-4" />
-                              Rename
-                            </DropdownMenuItem>
-                            <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => { set_dialog_mode('delete'); set_active_project(project); set_name('') }}>
-                              <Trash2 className="h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      )}
-                    </div>
-                  </div>
-
-                  {expanded && (
-                    <div className="border-t px-4 py-4">
-                      {can_manage && (
-                        <div className="mb-4 flex flex-col gap-3 md:flex-row">
-                          <Input placeholder="New API key name" value={api_key_name} onChange={(e) => set_api_key_name(e.target.value)} />
-                          <Button
-                            onClick={async () => {
-                              await with_error(async () => {
-                                const next_raw_key = await create_api_key(organizationId, project.project_id, api_key_name)
-                                set_api_key_name('')
-                                set_raw_key(next_raw_key)
-                              })
-                            }}
-                            disabled={api_key_name.trim().length < 2}
-                          >
-                            Create API key
-                          </Button>
-                        </div>
-                      )}
-
-                      <div className="space-y-3">
-                        {api_keys.length === 0 ? (
-                          <p className="text-sm text-muted-foreground">No API keys for this project.</p>
-                        ) : (
-                          api_keys.map((api_key) => (
-                            <div key={api_key.key_id} className="flex items-center justify-between gap-4 rounded-md border p-3">
-                              <div>
-                                <div className="flex items-center gap-2">
-                                  <p className="text-sm font-medium">{api_key.name}</p>
-                                  {api_key.rotated_at && <Badge variant="secondary">Rotated</Badge>}
-                                </div>
-                                <p className="mt-1 text-xs text-muted-foreground">
-                                  Last used: {api_key.last_used_at ? new Date(api_key.last_used_at).toLocaleString() : 'Never'}
-                                </p>
-                              </div>
-                              {can_manage && (
-                                <div className="flex items-center gap-2">
-                                  <Button variant="outline" size="sm" onClick={() => { set_api_action({ type: 'rotate', project_id: project.project_id, key_id: api_key.key_id }); set_api_key_confirmation('') }}>
-                                    <RefreshCcw className="h-4 w-4" />
-                                    Rotate
-                                  </Button>
-                                  <Button variant="destructive" size="sm" onClick={() => { set_api_action({ type: 'revoke', project_id: project.project_id, key_id: api_key.key_id }); set_api_key_confirmation('') }}>
-                                    Revoke
-                                  </Button>
-                                </div>
-                              )}
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )
-            })
+          {can_manage && (
+            <Button size="sm" className="h-8 text-xs px-4 font-bold" onClick={() => { set_dialog_mode('create'); set_name('') }}>
+              <Plus className="h-3.5 w-3.5 mr-1.5" />
+              New Project
+            </Button>
           )}
-        </CardContent>
-      </Card>
+       </div>
 
-      <Dialog open={dialog_mode !== null} onOpenChange={(open) => !open && set_dialog_mode(null)}>
-        <DialogContent>
+       <div className="rounded-lg border border-border/50 bg-card/40 overflow-hidden shadow-sm">
+          {loading ? (
+             <div className="flex items-center justify-center py-12"><LoadingSpinner size="sm" /></div>
+          ) : projects.length === 0 ? (
+             <div className="py-12 text-center text-xs text-muted-foreground italic">No projects found for this organization.</div>
+          ) : (
+            <div className="divide-y divide-border/30">
+               {projects.map((project) => {
+                  const api_keys = api_keys_by_project[project.project_id] ?? EMPTY_API_KEYS
+                  const expanded = expanded_project_id === project.project_id
+                  
+                  return (
+                    <div key={project.project_id} className="group">
+                       <div className="flex items-center justify-between px-5 py-3 hover:bg-accent/5 transition-all text-xs">
+                          <div className="flex items-center gap-4">
+                             <div className="h-2 w-2 rounded-full bg-primary/30 group-hover:scale-125 transition-transform" />
+                             <div>
+                                <p className="font-bold text-foreground text-[14px] leading-tight">{project.name}</p>
+                                <div className="flex items-center gap-2 mt-0.5">
+                                   <p className="text-[10px] text-muted-foreground/60 font-mono scale-95">{project.project_id}</p>
+                                   <span className="text-[10px] text-muted-foreground/40 font-bold">•</span>
+                                   <p className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-wider">{api_keys.length} KEYS</p>
+                                </div>
+                             </div>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                             <Button variant="outline" size="sm" className="h-7 text-[10px] font-bold px-3 transition-all" onClick={() => toggle_project(project.project_id)}>
+                                <KeyRound className="h-3.5 w-3.5 mr-1.5" strokeWidth={2.5} />
+                                {expanded ? 'Hide Keys' : 'API Keys'}
+                             </Button>
+                             {can_manage && (
+                                <DropdownMenu>
+                                  <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100">
+                                      <MoreHorizontal className="h-3.5 w-3.5" />
+                                    </Button>
+                                  </DropdownMenuTrigger>
+                                  <DropdownMenuContent align="end" className="text-xs font-semibold">
+                                     <DropdownMenuItem onClick={() => { set_dialog_mode('rename'); set_active_project(project); set_name(project.name) }}>
+                                       <Pencil className="mr-2 h-3.5 w-3.5" /> Rename
+                                     </DropdownMenuItem>
+                                     <DropdownMenuItem className="text-destructive font-bold" onClick={() => { set_dialog_mode('delete'); set_active_project(project); set_name('') }}>
+                                       <Trash2 className="mr-2 h-3.5 w-3.5" /> Delete
+                                     </DropdownMenuItem>
+                                  </DropdownMenuContent>
+                                </DropdownMenu>
+                             )}
+                          </div>
+                       </div>
+
+                       {expanded && (
+                          <div className="bg-muted/10 border-y border-border/20 px-8 py-5 animate-in slide-in-from-top-1 duration-200">
+                             {can_manage && (
+                                <div className="mb-6 flex items-end gap-3 max-w-2xl">
+                                   <div className="flex-1 space-y-1.5">
+                                      <Label className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest pl-1">New Key Label</Label>
+                                      <Input placeholder="e.g. Production Web" value={api_key_name} onChange={(e) => set_api_key_name(e.target.value)} className="h-8 text-xs bg-background" />
+                                   </div>
+                                   <Button 
+                                      size="sm" 
+                                      className="h-8 text-[11px] font-bold px-4"
+                                      onClick={async () => {
+                                        await with_error(async () => {
+                                          const next_raw_key = await create_api_key(organizationId, project.project_id, api_key_name)
+                                          set_api_key_name('')
+                                          set_raw_key(next_raw_key)
+                                        })
+                                      }}
+                                      disabled={api_key_name.trim().length < 2}
+                                   >
+                                      Generate Key
+                                   </Button>
+                                </div>
+                             )}
+
+                             <div className="space-y-2">
+                                {api_keys.length === 0 ? (
+                                   <p className="text-[11px] text-muted-foreground italic text-center py-4 bg-background/50 rounded border border-dashed border-border/50">No API keys active for this project.</p>
+                                ) : (
+                                   api_keys.map((api_key) => (
+                                      <div key={api_key.key_id} className="group/api flex items-center justify-between p-2.5 rounded border border-border/30 bg-background/50 hover:bg-background transition-all">
+                                         <div className="flex items-center gap-3">
+                                            <Shield className="h-3.5 w-3.5 text-muted-foreground/30" />
+                                            <div>
+                                               <p className="text-[12px] font-bold leading-tight">{api_key.name}</p>
+                                               <p className="text-[10px] text-muted-foreground/60 font-mono mt-0.5 tracking-tight uppercase">
+                                                 Last used: {api_key.last_used_at ? new Date(api_key.last_used_at).toLocaleDateString() : 'Never'}
+                                               </p>
+                                            </div>
+                                            {api_key.rotated_at && <Badge variant="secondary" className="h-4 px-1 text-[8px] font-black uppercase bg-primary/10 text-primary border-primary/20 leading-none">ROTATED</Badge>}
+                                         </div>
+                                         {can_manage && (
+                                            <div className="flex items-center gap-1 opacity-0 group-hover/api:opacity-100 transition-opacity">
+                                               <Button variant="ghost" size="sm" className="h-6 text-[10px] font-bold" onClick={() => { set_api_action({ type: 'rotate', project_id: project.project_id, key_id: api_key.key_id }); set_api_key_confirmation('') }}>
+                                                  <RefreshCcw className="h-3 w-3 mr-1" /> Rotate
+                                               </Button>
+                                               <Button variant="ghost" size="sm" className="h-6 text-[10px] font-bold text-destructive hover:bg-destructive/5" onClick={() => { set_api_action({ type: 'revoke', project_id: project.project_id, key_id: api_key.key_id }); set_api_key_confirmation('') }}>
+                                                  <Trash2 className="h-3 w-3 mr-1" /> Revoke
+                                               </Button>
+                                            </div>
+                                         )}
+                                      </div>
+                                   ))
+                                )}
+                             </div>
+                          </div>
+                       )}
+                    </div>
+                  )
+               })}
+            </div>
+          )}
+       </div>
+
+       <Dialog open={dialog_mode !== null} onOpenChange={(open) => !open && set_dialog_mode(null)}>
+        <DialogContent className="max-w-md p-6">
           <DialogHeader>
-            <DialogTitle>
-              {dialog_mode === 'create' && 'Create project'}
-              {dialog_mode === 'rename' && 'Rename project'}
-              {dialog_mode === 'delete' && 'Delete project'}
+            <DialogTitle className="text-lg font-bold tracking-tight">
+              {dialog_mode === 'create' && 'Create Project'}
+              {dialog_mode === 'rename' && 'Rename Project'}
+              {dialog_mode === 'delete' && 'Delete Project'}
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-xs">
               {dialog_mode === 'delete'
-                ? `Type ${active_project?.name ?? 'the project name'} to confirm deletion.`
-                : 'Project names must follow the server validation rules.'}
+                ? `Type "${active_project?.name}" below to confirm permanent deletion.`
+                : 'Define a new project workspace for your API authentication tokens.'}
             </DialogDescription>
           </DialogHeader>
 
           {(dialog_mode === 'create' || dialog_mode === 'rename') && (
-            <div className="space-y-2">
-              <Label htmlFor="project_name">Project name</Label>
-              <Input id="project_name" value={name} onChange={(e) => set_name(e.target.value)} />
+            <div className="space-y-1.5 pt-4">
+              <Label htmlFor="project_name" className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Project Name</Label>
+              <Input id="project_name" placeholder="e.g. Mobile App" value={name} onChange={(e) => set_name(e.target.value)} className="h-9 text-xs" />
             </div>
           )}
 
           {dialog_mode === 'delete' && active_project && (
-            <div className="space-y-2">
-              <Label htmlFor="project_confirm">Type {active_project.name} to confirm</Label>
-              <Input id="project_confirm" value={name} onChange={(e) => set_name(e.target.value)} />
+            <div className="space-y-1.5 pt-4">
+              <Label htmlFor="project_confirm" className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Confirm Deletion</Label>
+              <Input id="project_confirm" placeholder={active_project.name} value={name} onChange={(e) => set_name(e.target.value)} className="h-9 text-xs" />
             </div>
           )}
 
           <ErrorAlert message={error} />
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => set_dialog_mode(null)}>Cancel</Button>
+          <DialogFooter className="mt-6">
+            <Button variant="ghost" size="sm" className="text-xs font-bold" onClick={() => set_dialog_mode(null)}>Cancel</Button>
             <Button
               variant={dialog_mode === 'delete' ? 'destructive' : 'default'}
+              size="sm"
+              className="text-xs font-bold px-5"
               onClick={() => with_error(async () => {
                 if (dialog_mode === 'create') await create_project(organizationId, name)
                 if (dialog_mode === 'rename' && active_project) await edit_project(organizationId, active_project.project_id, name)
@@ -246,22 +257,24 @@ export function OrganizationProjectsPage() {
       </Dialog>
 
       <Dialog open={api_action !== null} onOpenChange={(open) => !open && set_api_action(null)}>
-        <DialogContent>
+        <DialogContent className="max-w-sm p-6">
           <DialogHeader>
-            <DialogTitle>{api_action?.type === 'rotate' ? 'Rotate API key' : 'Revoke API key'}</DialogTitle>
-            <DialogDescription>
-              {api_action?.type === 'rotate' ? 'Type ROTATE to confirm. A new raw key will be shown once.' : 'Type REVOKE to confirm.'}
+            <DialogTitle className="text-lg font-bold tracking-tight">Security Action</DialogTitle>
+            <DialogDescription className="text-xs">
+              {api_action?.type === 'rotate' ? 'Type "ROTATE" to confirm. This will invalidate existing keys.' : 'Type "REVOKE" to confirm permanent deletion.'}
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-2">
-            <Label htmlFor="api_confirmation">Confirmation</Label>
-            <Input id="api_confirmation" value={api_key_confirmation} onChange={(e) => set_api_key_confirmation(e.target.value)} />
+          <div className="space-y-1.5 pt-4">
+            <Label htmlFor="api_confirmation" className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Confirmation Code</Label>
+            <Input id="api_confirmation" value={api_key_confirmation} onChange={(e) => set_api_key_confirmation(e.target.value)} className="h-9 text-xs" />
           </div>
           <ErrorAlert message={error} />
-          <DialogFooter>
-            <Button variant="outline" onClick={() => set_api_action(null)}>Cancel</Button>
+          <DialogFooter className="mt-6">
+            <Button variant="ghost" size="sm" className="text-xs font-bold" onClick={() => set_api_action(null)}>Cancel</Button>
             <Button
               variant={api_action?.type === 'revoke' ? 'destructive' : 'default'}
+              size="sm"
+              className="text-xs font-bold px-5"
               onClick={() => with_error(async () => {
                 if (!api_action?.key_id) return
                 if (api_action.type === 'rotate') {
@@ -278,21 +291,21 @@ export function OrganizationProjectsPage() {
                 (api_action?.type === 'revoke' && api_key_confirmation !== 'REVOKE')
               }
             >
-              Confirm
+              Confirm Action
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
       <Dialog open={raw_key !== null} onOpenChange={(open) => !open && set_raw_key(null)}>
-        <DialogContent>
+        <DialogContent className="max-w-md p-6">
           <DialogHeader>
-            <DialogTitle>Raw API key</DialogTitle>
-            <DialogDescription>This is the only time the raw key will be shown. Store it securely.</DialogDescription>
+            <DialogTitle className="text-lg font-bold tracking-tight">Strategic API Secret</DialogTitle>
+            <DialogDescription className="text-xs">This key is only visible once. Store it in a secure environment.</DialogDescription>
           </DialogHeader>
-          <div className="rounded-md border bg-muted/50 p-4 font-mono text-sm break-all">{raw_key}</div>
-          <DialogFooter>
-            <Button onClick={() => set_raw_key(null)}>Close</Button>
+          <div className="rounded border bg-muted/20 p-4 mt-4 font-mono text-xs break-all border-border/50 text-foreground shadow-inner">{raw_key}</div>
+          <DialogFooter className="mt-6">
+            <Button size="sm" className="text-xs font-bold px-10" onClick={() => set_raw_key(null)}>Done</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

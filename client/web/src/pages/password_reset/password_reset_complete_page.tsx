@@ -57,7 +57,7 @@ export function PasswordResetCompletePage() {
         </p>
       </div>
 
-      <form onSubmit={handle_submit} className="flex flex-col gap-4">
+      <form onSubmit={handle_submit} noValidate className="flex flex-col gap-4">
         <div className="grid gap-2">
           <Label htmlFor="new_password" title="New Password"  className="text-xs font-medium uppercase tracking-wider text-muted-foreground/80">New password</Label>
           <div className="relative">
@@ -96,11 +96,11 @@ export function PasswordResetCompletePage() {
           />
         </div>
 
-        <ErrorAlert message={error} />
-
         <Button type="submit" className="w-full h-10 font-medium bg-primary text-primary-foreground hover:bg-primary/90" disabled={loading}>
           {loading ? <LoadingSpinner size="sm" className="mr-2" /> : "Update password"}
         </Button>
+
+        <ErrorAlert message={error} />
       </form>
     </div>
   )

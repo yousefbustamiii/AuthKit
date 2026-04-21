@@ -33,16 +33,15 @@ function NavItem({ to, icon, label }: NavItemProps) {
       end={to === ROUTES.DASHBOARD}
       className={({ isActive }) =>
         cn(
-          'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+          'flex items-center gap-2.5 rounded-md px-2.5 py-1.5 text-[13px] font-medium transition-colors',
           isActive
-            ? 'bg-accent text-accent-foreground'
-            : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground',
+            ? 'bg-accent text-accent-foreground shadow-sm'
+            : 'text-muted-foreground hover:bg-accent/40 hover:text-foreground',
         )
       }
     >
-      {icon}
+      <span className="shrink-0 scale-90">{icon}</span>
       {label}
-      <ChevronRight className="ml-auto h-3.5 w-3.5 opacity-0 group-[.active]:opacity-100" />
     </NavLink>
   )
 }
@@ -62,44 +61,40 @@ function Sidebar() {
   }
 
   return (
-    <aside className="flex h-full w-60 shrink-0 flex-col border-r bg-card">
+    <aside className="hidden md:flex h-full w-[240px] shrink-0 flex-col border-r bg-card/30 backdrop-blur-sm">
       {/* Brand */}
-      <div className="flex h-16 items-center gap-2.5 px-4">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-          <ShieldCheck className="h-4 w-4 text-primary-foreground" />
+      <div className="flex h-12 items-center gap-2.5 px-5">
+        <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary shadow-sm">
+          <ShieldCheck className="h-3.5 w-3.5 text-primary-foreground" />
         </div>
-        <span className="font-semibold tracking-tight">AuthKit</span>
+        <span className="text-sm font-semibold tracking-tight">AuthKit</span>
       </div>
-
-      <Separator />
 
       {/* User info */}
-      <div className="flex items-center gap-3 px-4 py-4">
-        <Avatar className="h-9 w-9">
-          <AvatarFallback className="text-xs font-medium">{initials}</AvatarFallback>
+      <div className="flex items-center gap-3 px-5 py-3.5">
+        <Avatar className="h-7 w-7 border shadow-sm">
+          <AvatarFallback className="text-[10px] font-semibold bg-muted">{initials}</AvatarFallback>
         </Avatar>
         <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium">{user?.email ?? '—'}</p>
-          <p className="text-xs text-muted-foreground capitalize">{user?.account_status ?? ''}</p>
+          <p className="truncate text-xs font-semibold leading-none text-foreground">{user?.email ?? '—'}</p>
+          <p className="mt-1 text-[10px] text-muted-foreground/70 uppercase tracking-wider font-bold leading-none">{user?.account_status ?? ''}</p>
         </div>
       </div>
 
-      <Separator />
-
       {/* Navigation */}
-      <nav className="flex-1 space-y-1 px-3 py-4">
-        <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+      <nav className="flex-1 space-y-0.5 px-3 py-2">
+        <div className="mt-2 mb-1.5 px-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground/50">
           Overview
-        </p>
+        </div>
         <NavItem to={ROUTES.DASHBOARD} icon={<LayoutDashboard className="h-4 w-4" />} label="Sessions" />
         <NavItem to={ROUTES.DASHBOARD_ORGANIZATIONS} icon={<Building2 className="h-4 w-4" />} label="Organizations" />
         <NavItem to={ROUTES.DASHBOARD_PROFILE} icon={<User className="h-4 w-4" />} label="Profile" />
         <NavItem to={ROUTES.DASHBOARD_DEVICES} icon={<Smartphone className="h-4 w-4" />} label="Devices" />
 
-        <div className="pt-4">
-          <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Settings
-          </p>
+        <div className="pt-5">
+          <div className="mb-1.5 px-2.5 text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground/50">
+            Account Security
+          </div>
           <NavItem to={ROUTES.DASHBOARD_SETTINGS_EMAIL} icon={<Mail className="h-4 w-4" />} label="Change Email" />
           <NavItem to={ROUTES.DASHBOARD_SETTINGS_PASSWORD} icon={<Lock className="h-4 w-4" />} label="Change Password" />
           <NavItem to={ROUTES.DASHBOARD_SETTINGS_DELETE} icon={<Trash2 className="h-4 w-4" />} label="Delete Account" />
@@ -125,11 +120,13 @@ function Sidebar() {
 
 export function DashboardLayout() {
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
+    <div className="flex h-screen overflow-hidden bg-background selection:bg-primary/10">
       <SessionExpiredOverlay />
       <Sidebar />
-      <main className="flex-1 overflow-auto">
-        <Outlet />
+      <main className="flex-1 overflow-auto bg-background/50">
+        <div className="mx-auto max-w-6xl">
+          <Outlet />
+        </div>
       </main>
     </div>
   )

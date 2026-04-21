@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { ExternalLink } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ErrorAlert } from '@/components/shared/error_alert'
@@ -138,125 +138,122 @@ export function OrganizationBillingPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base font-medium">Current subscription</CardTitle>
-          <CardDescription>Stripe-backed billing state for this organization.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {!billing?.subscription ? (
-            <p className="text-sm text-muted-foreground">No active subscription yet.</p>
-          ) : (
-            <div className="grid gap-4 md:grid-cols-3">
-              <div className="rounded-lg border p-4">
-                <p className="text-sm text-muted-foreground">Plan</p>
-                <p className="mt-2 text-lg font-semibold capitalize">{billing.subscription.plan.replace('_', ' ')}</p>
-              </div>
-              <div className="rounded-lg border p-4">
-                <p className="text-sm text-muted-foreground">Status</p>
-                <div className="mt-2 flex items-center gap-2">
-                  <Badge className="capitalize">{billing.subscription.status}</Badge>
-                  {billing.subscription.cancel_at_period_end && <Badge variant="outline">Canceling at period end</Badge>}
-                </div>
-              </div>
-              <div className="rounded-lg border p-4">
-                <p className="text-sm text-muted-foreground">Current period end</p>
-                <p className="mt-2 text-lg font-semibold">{new Date(billing.subscription.current_period_end).toLocaleDateString()}</p>
-              </div>
-            </div>
-          )}
-
-          {is_owner && billing?.subscription && !billing.subscription.cancel_at_period_end && (
-            <Button variant="destructive" onClick={handle_cancel} disabled={cancel_loading}>
-              Cancel subscription
-            </Button>
-          )}
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base font-medium">Plans</CardTitle>
-          <CardDescription>Start checkout for a new subscription or upgrade your current plan.</CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-4 md:grid-cols-3">
-          {PLAN_OPTIONS.map((plan) => {
-            const is_current = current_plan_number === plan.number
-            const can_upgrade =
-              is_owner &&
-              billing?.subscription &&
-              current_plan_number !== null &&
-              subscription_status !== 'canceled' &&
-              subscription_status !== 'incomplete_expired' &&
-              plan.number > current_plan_number
-            const can_checkout = is_owner && can_checkout_again
-
-            return (
-              <div key={plan.number} className="rounded-lg border p-4">
+    <div className="space-y-6 max-w-5xl">
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card className="bg-card/40 border-border/50">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-semibold tracking-tight uppercase text-muted-foreground/80">Plan Details</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {!billing?.subscription ? (
+              <p className="text-xs text-muted-foreground">No active subscription yet.</p>
+            ) : (
+              <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <p className="font-medium">{plan.label}</p>
-                  {is_current && <Badge variant="secondary">Current</Badge>}
-                </div>
-                <p className="mt-2 text-sm text-muted-foreground">Use Stripe checkout and webhook sync for final billing state.</p>
-                <div className="mt-4">
-                  {can_checkout && (
-                    <Button onClick={() => handle_checkout(plan.number)} disabled={busy_plan === plan.number}>
-                      {busy_plan === plan.number && <LoadingSpinner size="sm" className="text-primary-foreground" />}
-                      Checkout
-                    </Button>
-                  )}
-                  {can_upgrade && (
-                    <Button onClick={() => handle_upgrade(plan.number)} disabled={busy_plan === plan.number}>
-                      Upgrade
-                    </Button>
-                  )}
-                  {!can_checkout && !can_upgrade && (
-                    <Button variant="outline" disabled>
-                      {is_current ? 'Current plan' : 'Unavailable'}
-                    </Button>
-                  )}
-                </div>
-              </div>
-            )
-          })}
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base font-medium">Invoices</CardTitle>
-          <CardDescription>{billing?.invoices.length ?? 0} invoices synced from Stripe webhooks.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {billing?.invoices.length ? (
-            billing.invoices.map((invoice) => (
-              <div key={invoice.invoice_id} className="flex flex-wrap items-center justify-between gap-4 rounded-lg border p-4">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium">{invoice.currency.toUpperCase()} {(invoice.amount / 100).toFixed(2)}</p>
-                    <Badge variant="outline" className="capitalize">{invoice.status}</Badge>
+                  <div>
+                    <h3 className="text-lg font-bold tracking-tight capitalize leading-none mb-1">{billing.subscription.plan.replace('_', ' ')}</h3>
+                    <div className="flex items-center gap-2">
+                      <Badge className="h-5 px-1.5 text-[10px] uppercase font-bold tracking-wider">{billing.subscription.status}</Badge>
+                      {billing.subscription.cancel_at_period_end && <Badge variant="outline" className="h-5 px-1.5 text-[10px] uppercase font-bold">Planned Cancel</Badge>}
+                    </div>
                   </div>
-                  <p className="mt-1 text-sm text-muted-foreground">{new Date(invoice.created_at).toLocaleString()}</p>
+                  <div className="text-right">
+                    <p className="text-[11px] font-bold uppercase text-muted-foreground/60 tracking-wider">Next Renewal</p>
+                    <p className="text-sm font-semibold">{new Date(billing.subscription.current_period_end).toLocaleDateString()}</p>
+                  </div>
                 </div>
-                {invoice.hosted_invoice_url ? (
-                  <Button variant="outline" asChild>
-                    <a href={invoice.hosted_invoice_url} target="_blank" rel="noreferrer">
-                      <ExternalLink className="h-4 w-4" />
-                      Open invoice
-                    </a>
+
+                {is_owner && !billing.subscription.cancel_at_period_end && (
+                  <Button variant="outline" size="sm" className="w-full text-xs h-8 border-destructive/20 text-destructive hover:bg-destructive hover:text-destructive-foreground transition-all" onClick={handle_cancel} disabled={cancel_loading}>
+                    {cancel_loading ? <LoadingSpinner size="sm" /> : "Cancel Subscription"}
                   </Button>
-                ) : (
-                  <Badge variant="secondary">No hosted URL</Badge>
                 )}
               </div>
-            ))
-          ) : (
-            <p className="text-sm text-muted-foreground">No invoices yet.</p>
-          )}
+            )}
+          </CardContent>
+        </Card>
+
+        <Card className="bg-card/40 border-border/50">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-semibold tracking-tight uppercase text-muted-foreground/80">Available Tiers</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {PLAN_OPTIONS.map((plan) => {
+              const is_current = current_plan_number === plan.number
+              const can_upgrade = is_owner && billing?.subscription && current_plan_number !== null && subscription_status !== 'canceled' && subscription_status !== 'incomplete_expired' && plan.number > current_plan_number
+              const can_checkout = is_owner && can_checkout_again
+
+              return (
+                <div key={plan.number} className="flex items-center justify-between p-2 rounded-md border border-transparent hover:border-border/50 hover:bg-accent/10 transition-all">
+                  <div className="flex items-center gap-3">
+                    <div className="h-2 w-2 rounded-full bg-primary/20" />
+                    <div>
+                      <p className="text-[13px] font-semibold">{plan.label}</p>
+                      {is_current && <p className="text-[11px] text-primary/80 font-bold uppercase tracking-wider">Current Plan</p>}
+                    </div>
+                  </div>
+                  <div>
+                    {can_checkout && (
+                      <Button size="sm" className="h-7 text-[11px] px-3 font-bold" onClick={() => handle_checkout(plan.number)} disabled={busy_plan === plan.number}>
+                        {busy_plan === plan.number ? <LoadingSpinner size="sm" /> : "Upgrade"}
+                      </Button>
+                    )}
+                    {can_upgrade && (
+                      <Button size="sm" className="h-7 text-[11px] px-3 font-bold" variant="outline" onClick={() => handle_upgrade(plan.number)} disabled={busy_plan === plan.number}>
+                        Upgrade
+                      </Button>
+                    )}
+                    {!can_checkout && !can_upgrade && is_current && (
+                      <Badge variant="secondary" className="h-6 text-[10px] font-bold">Active</Badge>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card className="bg-card/20 border-border/50">
+        <CardHeader className="pb-3 border-b border-border/50">
+          <CardTitle className="text-sm font-semibold tracking-tight uppercase text-muted-foreground/80">Billing History</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="w-full overflow-hidden">
+            {billing?.invoices.length ? (
+              <div className="divide-y divide-border/50">
+                {billing.invoices.map((invoice) => (
+                  <div key={invoice.invoice_id} className="grid grid-cols-4 items-center gap-4 px-6 py-3 hover:bg-accent/5 transition-all text-xs">
+                    <div className="font-semibold text-foreground">
+                      {new Date(invoice.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </div>
+                    <div className="flex items-center gap-2">
+                       <span className="font-bold text-[13px]">{invoice.currency.toUpperCase()} {(invoice.amount / 100).toFixed(2)}</span>
+                       <Badge variant="outline" className="text-[10px] px-1.5 h-5 capitalize bg-background">{invoice.status}</Badge>
+                    </div>
+                    <div className="text-muted-foreground/60 font-mono scale-90">
+                      #{invoice.invoice_id.slice(-8).toUpperCase()}
+                    </div>
+                    <div className="text-right">
+                      {invoice.hosted_invoice_url ? (
+                        <a href={invoice.hosted_invoice_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-primary hover:underline font-bold tracking-tight">
+                          View Invoice <ExternalLink className="h-3 w-3" />
+                        </a>
+                      ) : (
+                        <span className="text-muted-foreground/40 italic">N/A</span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-8 text-center">
+                <p className="text-xs text-muted-foreground">No transaction history available yet.</p>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
-
       <ErrorAlert message={error} />
     </div>
   )

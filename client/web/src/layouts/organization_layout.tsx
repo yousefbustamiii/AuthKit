@@ -15,12 +15,12 @@ function SectionLink({ to, label, icon }: { to: string; label: string; icon: Rea
       to={to}
       className={({ isActive }) =>
         cn(
-          'inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-          isActive ? 'bg-accent text-accent-foreground' : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground',
+          'inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-[13px] font-medium transition-colors border border-transparent',
+          isActive ? 'bg-background text-foreground border-border shadow-sm' : 'text-muted-foreground hover:text-foreground',
         )
       }
     >
-      {icon}
+      <span className="scale-90">{icon}</span>
       {label}
     </NavLink>
   )
@@ -64,38 +64,38 @@ export function OrganizationLayout() {
   }
 
   return (
-    <div className="p-8">
-      <div className="mb-8 flex flex-col gap-4">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary">
-                <Building2 className="h-5 w-5 text-primary-foreground" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-semibold tracking-tight">{organization.name}</h1>
-                <p className="mt-1 text-sm text-muted-foreground">Manage members, projects, API keys, and billing.</p>
-              </div>
+    <div className="px-6 py-6 lg:px-8 lg:py-6 max-w-6xl">
+      <div className="mb-6 flex flex-col gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 border border-primary/20 shadow-sm">
+              <Building2 className="h-4 w-4 text-primary" strokeWidth={2} />
+            </div>
+            <div>
+              <h1 className="text-xl font-semibold tracking-tight leading-tight">{organization.name}</h1>
+              <p className="text-[11px] font-medium text-muted-foreground/80 tracking-wide uppercase mt-0.5">Organization ID: {organization.organization_id}</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <Badge variant="secondary" className="capitalize">
+          <div className="flex items-center gap-2">
+            <Badge variant="secondary" className="text-[10px] uppercase font-bold tracking-wider px-2 py-0 h-5">
               {organization.current_user_role}
             </Badge>
-            <Button asChild variant="outline">
-              <NavLink to={ROUTES.DASHBOARD_ORGANIZATIONS}>All organizations</NavLink>
+            <Button asChild variant="outline" size="sm" className="h-8 text-xs">
+              <NavLink to={ROUTES.DASHBOARD_ORGANIZATIONS}>Back</NavLink>
             </Button>
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-2 border-b pb-3">
-          <SectionLink to={core_routes.organization_members(organizationId)} label="Members" icon={<Users className="h-4 w-4" />} />
-          <SectionLink to={core_routes.organization_projects(organizationId)} label="Projects" icon={<FolderKanban className="h-4 w-4" />} />
-          <SectionLink to={core_routes.organization_billing(organizationId)} label="Billing" icon={<CreditCard className="h-4 w-4" />} />
+        <div className="flex flex-wrap gap-1 border-b pb-1.5 mt-2">
+          <SectionLink to={core_routes.organization_members(organizationId)} label="Members" icon={<Users className="h-3.5 w-3.5" />} />
+          <SectionLink to={core_routes.organization_projects(organizationId)} label="Projects" icon={<FolderKanban className="h-3.5 w-3.5" />} />
+          <SectionLink to={core_routes.organization_billing(organizationId)} label="Billing" icon={<CreditCard className="h-3.5 w-3.5" />} />
         </div>
       </div>
 
-      <Outlet />
+      <div className="animate-in fade-in slide-in-from-bottom-1 duration-300">
+        <Outlet />
+      </div>
     </div>
   )
 }

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Crown, MailPlus, MoreHorizontal, Shield, User } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { MailPlus, MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -93,147 +92,159 @@ export function OrganizationMembersPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader className="pb-4">
-          <CardTitle className="text-base font-medium">Accept invitation</CardTitle>
-          <CardDescription>Paste an invitation code from email to join another organization.</CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-3 md:flex-row">
-          <Input
-            placeholder="Invitation code"
-            value={invitation_key}
-            onChange={(e) => set_invitation_key(e.target.value)}
-          />
-          <Button onClick={handle_accept} disabled={saving || invitation_key.trim().length < 6}>
-            Accept invitation
-          </Button>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader className="pb-4">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <CardTitle className="text-base font-medium">Members</CardTitle>
-              <CardDescription>{members.length} active members in this organization.</CardDescription>
-            </div>
-            {(current_role === 'owner' || current_role === 'admin') && (
-              <Button onClick={() => set_invite_open(true)}>
-                <MailPlus className="h-4 w-4" />
-                Invite member
+    <div className="space-y-6 max-w-5xl">
+       <div className="grid gap-6 md:grid-cols-2">
+        <div className="rounded-lg border border-border/50 bg-card/20 p-4">
+           <h3 className="text-[13px] font-bold uppercase tracking-[0.05em] text-muted-foreground/60 mb-2">Accept Invitation</h3>
+           <div className="flex gap-2">
+             <Input
+                placeholder="Paste code from email"
+                value={invitation_key}
+                onChange={(e) => set_invitation_key(e.target.value)}
+                className="h-8 text-xs bg-background"
+              />
+              <Button size="sm" className="h-8 text-xs px-3 font-bold" onClick={handle_accept} disabled={saving || invitation_key.trim().length < 6}>
+                Join
               </Button>
-            )}
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-3">
+           </div>
+        </div>
+
+        <div className="rounded-lg border border-border/50 bg-card/20 p-4 flex items-center justify-between">
+           <div>
+             <h3 className="text-[13px] font-bold uppercase tracking-[0.05em] text-muted-foreground/60">Invite Member</h3>
+             <p className="text-[11px] text-muted-foreground mt-0.5">Add someone to your workspace team.</p>
+           </div>
+           {(current_role === 'owner' || current_role === 'admin') && (
+            <Button size="sm" className="h-8 text-xs px-4 font-bold" onClick={() => set_invite_open(true)}>
+              <MailPlus className="h-3.5 w-3.5 mr-1.5" />
+              Invite
+            </Button>
+          )}
+        </div>
+      </div>
+
+      <div className="rounded-lg border border-border/50 bg-card/40 overflow-hidden">
+        <div className="grid grid-cols-12 bg-muted/30 px-5 py-2.5 border-b border-border/50 text-[10px] uppercase font-bold tracking-widest text-muted-foreground/80">
+           <div className="col-span-6">Member</div>
+           <div className="col-span-4 text-center">Status / Role</div>
+           <div className="col-span-2 text-right pr-2">Actions</div>
+        </div>
+
+        <div className="divide-y divide-border/30">
           {loading ? (
-            <div className="flex items-center justify-center py-12"><LoadingSpinner size="lg" /></div>
+             <div className="flex items-center justify-center py-12"><LoadingSpinner size="sm" /></div>
+          ) : members.length === 0 ? (
+             <div className="py-12 text-center text-xs text-muted-foreground">No members found.</div>
           ) : (
             members.map((member) => {
-              const is_self = member.user_id === current_user?.user_id
-              const can_promote = !is_self && member.role === 'member' && (current_role === 'owner' || current_role === 'admin')
-              const can_demote = !is_self && member.role === 'admin' && current_role === 'owner'
-              const can_remove =
-                !is_self &&
-                ((current_role === 'owner' && member.role !== 'owner') ||
-                  (current_role === 'admin' && member.role === 'member'))
+               const is_self = member.user_id === current_user?.user_id
+               const can_promote = !is_self && member.role === 'member' && (current_role === 'owner' || current_role === 'admin')
+               const can_demote = !is_self && member.role === 'admin' && current_role === 'owner'
+               const can_remove = !is_self && ((current_role === 'owner' && member.role !== 'owner') || (current_role === 'admin' && member.role === 'member'))
 
-              return (
-                <div key={member.organization_member_id} className="flex items-center justify-between gap-4 rounded-lg border p-4">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="truncate text-sm font-medium">{member.name ?? member.email}</p>
-                      {member.role === 'owner' && <Badge className="gap-1"><Crown className="h-3 w-3" /> Owner</Badge>}
-                      {member.role === 'admin' && <Badge variant="secondary" className="gap-1"><Shield className="h-3 w-3" /> Admin</Badge>}
-                      {member.role === 'member' && <Badge variant="outline" className="gap-1"><User className="h-3 w-3" /> Member</Badge>}
-                      {is_self && <Badge variant="outline">You</Badge>}
-                    </div>
-                    <p className="mt-1 text-sm text-muted-foreground">{member.email}</p>
-                  </div>
+               return (
+                <div key={member.organization_member_id} className="grid grid-cols-12 items-center px-5 py-3 hover:bg-accent/5 transition-all text-xs">
+                   <div className="col-span-6 flex items-center gap-3">
+                      <div className="h-7 w-7 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-[10px] font-bold text-primary">
+                         {member.email.slice(0, 2).toUpperCase()}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-bold truncate text-foreground">{member.name ?? member.email}</p>
+                        <p className="text-[10px] text-muted-foreground/70 truncate uppercase font-medium tracking-tight">Active since {new Date().toLocaleDateString()}</p>
+                      </div>
+                   </div>
 
-                  {(can_promote || can_demote || can_remove) && (
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        {can_promote && <DropdownMenuItem onClick={() => run_action(() => promote_member(organizationId, member.user_id))}>Promote to admin</DropdownMenuItem>}
-                        {can_demote && <DropdownMenuItem onClick={() => run_action(() => demote_member(organizationId, member.user_id))}>Demote to member</DropdownMenuItem>}
-                        {can_remove && (
-                          <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => run_action(() => remove_member(organizationId, member.user_id))}>
-                            Remove member
-                          </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  )}
+                   <div className="col-span-4 flex items-center justify-center gap-3">
+                      {is_self && <Badge variant="outline" className="h-5 px-1.5 text-[9px] font-black uppercase tracking-tighter bg-muted/30 border-muted-foreground/20 text-muted-foreground">You</Badge>}
+                      {member.role === 'owner' && <Badge className="h-5 px-1.5 text-[9px] font-black uppercase tracking-tighter bg-primary/20 text-primary border-primary/20">Owner</Badge>}
+                      {member.role === 'admin' && <Badge variant="secondary" className="h-5 px-1.5 text-[9px] font-black uppercase tracking-tighter italic">Admin</Badge>}
+                      {member.role === 'member' && <Badge variant="outline" className="h-5 px-1.5 text-[9px] font-black uppercase tracking-tighter">Member</Badge>}
+                   </div>
+
+                   <div className="col-span-2 text-right">
+                     {(can_promote || can_demote || can_remove) && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-7 w-7 transition-colors">
+                              <MoreHorizontal className="h-3.5 w-3.5" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="text-xs">
+                            {can_promote && <DropdownMenuItem onClick={() => run_action(() => promote_member(organizationId, member.user_id))}>Promote to admin</DropdownMenuItem>}
+                            {can_demote && <DropdownMenuItem onClick={() => run_action(() => demote_member(organizationId, member.user_id))}>Demote to member</DropdownMenuItem>}
+                            {can_remove && (
+                              <DropdownMenuItem className="text-destructive font-semibold" onClick={() => run_action(() => remove_member(organizationId, member.user_id))}>
+                                Remove member
+                              </DropdownMenuItem>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
+                   </div>
                 </div>
-              )
+               )
             })
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardHeader className="pb-4">
-          <CardTitle className="text-base font-medium">Pending invitations</CardTitle>
-          <CardDescription>{invitations.length} open invitations.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {invitations.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No pending invitations.</p>
-          ) : (
-            invitations.map((invitation) => (
-              <div key={invitation.invitation_id} className="flex items-center justify-between gap-4 rounded-lg border p-4">
-                <div>
-                  <p className="text-sm font-medium">{invitation.email}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Role: <span className="capitalize">{invitation.role}</span>
-                  </p>
+      {invitations.length > 0 && (
+        <div className="rounded-lg border border-border/50 bg-card/10 overflow-hidden mt-8">
+           <div className="bg-muted/30 px-5 py-2 border-b border-border/50 text-[10px] uppercase font-bold tracking-widest text-muted-foreground/60">
+             Pending Invitations
+           </div>
+           <div className="divide-y divide-border/30">
+              {invitations.map((invitation) => (
+                <div key={invitation.invitation_id} className="flex items-center justify-between px-5 py-3 text-xs">
+                   <div className="flex items-center gap-3">
+                      <div className="h-7 w-7 rounded-full bg-muted border flex items-center justify-center">
+                         <MailPlus className="h-3 w-3 text-muted-foreground" />
+                      </div>
+                      <div>
+                        <p className="font-bold">{invitation.email}</p>
+                        <p className="text-[10px] text-muted-foreground/70 uppercase">Role: {invitation.role}</p>
+                      </div>
+                   </div>
+                   {(current_role === 'owner' || current_role === 'admin') && (
+                    <Button variant="ghost" size="sm" className="h-7 text-[10px] text-destructive hover:bg-destructive/5 font-bold px-3" onClick={() => run_action(() => cancel_invitation(organizationId, invitation.invitation_id))}>
+                      Cancel
+                    </Button>
+                  )}
                 </div>
-                {(current_role === 'owner' || current_role === 'admin') && (
-                  <Button variant="outline" onClick={() => run_action(() => cancel_invitation(organizationId, invitation.invitation_id))}>
-                    Cancel
-                  </Button>
-                )}
-              </div>
-            ))
-          )}
-        </CardContent>
-      </Card>
+              ))}
+           </div>
+        </div>
+      )}
 
       <Dialog open={invite_open} onOpenChange={set_invite_open}>
-        <DialogContent>
+        <DialogContent className="max-w-md p-6">
           <DialogHeader>
-            <DialogTitle>Invite member</DialogTitle>
-            <DialogDescription>Send an email invitation to join this organization.</DialogDescription>
+            <DialogTitle className="text-lg font-bold tracking-tight">Invite member</DialogTitle>
+            <DialogDescription className="text-xs">Send an invitation email to join this organization workspace.</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="invite_email">Email</Label>
-              <Input id="invite_email" type="email" value={invite_email} onChange={(e) => set_invite_email(e.target.value)} />
+          <div className="space-y-4 pt-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="invite_email" className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Email Address</Label>
+              <Input id="invite_email" type="email" placeholder="dev@authkit.io" value={invite_email} onChange={(e) => set_invite_email(e.target.value)} className="h-9 text-xs" />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="invite_role">Role</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="invite_role" className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Workspace Role</Label>
               <select
                 id="invite_role"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-xs shadow-sm transition-colors focus:ring-1 focus:ring-primary"
                 value={invite_role}
                 onChange={(e) => set_invite_role(e.target.value as 'admin' | 'member')}
               >
-                <option value="member">Member</option>
-                {current_role === 'owner' && <option value="admin">Admin</option>}
+                <option value="member">Member (Read/Write)</option>
+                {current_role === 'owner' && <option value="admin">Admin (Full Control)</option>}
               </select>
             </div>
           </div>
           <ErrorAlert message={error} />
-          <DialogFooter>
-            <Button variant="outline" onClick={() => set_invite_open(false)}>Cancel</Button>
-            <Button onClick={handle_invite} disabled={saving || invite_email.trim().length < 3}>
-              Send invitation
+          <DialogFooter className="mt-6">
+            <Button variant="ghost" size="sm" className="text-xs font-bold" onClick={() => set_invite_open(false)}>Cancel</Button>
+            <Button size="sm" className="text-xs font-bold px-5" onClick={handle_invite} disabled={saving || invite_email.trim().length < 3}>
+              {saving ? <LoadingSpinner size="sm" /> : "Send invitation"}
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Building2, Crown, MoreHorizontal, Plus, Users } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Building2, ChevronRight, MoreHorizontal, Plus, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -24,14 +23,6 @@ import { use_core_store } from '@/store/core_store'
 import type { OrganizationListItem } from '@/types/core_types'
 
 type DialogMode = 'create' | 'rename' | 'transfer' | 'leave' | 'delete' | null
-
-function format_date(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  })
-}
 
 export function OrganizationsPage() {
   const navigate = useNavigate()
@@ -126,78 +117,75 @@ export function OrganizationsPage() {
   }
 
   return (
-    <div className="p-8">
-      <div className="mb-8 flex items-start justify-between gap-4">
+    <div className="space-y-6 px-6 py-6 lg:px-8 max-w-5xl">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Organizations</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Create and manage your workspaces.</p>
+          <h1 className="text-xl font-bold tracking-tight leading-tight text-foreground">Organizations</h1>
+          <p className="text-[13px] text-muted-foreground mt-1">Manage your organizations and workspaces.</p>
         </div>
-        <Button onClick={() => open_dialog('create')}>
-          <Plus className="h-4 w-4" />
-          New organization
+        <Button onClick={() => open_dialog('create')} size="sm" className="h-8 text-xs font-bold px-3">
+          <Plus className="h-3.5 w-3.5 mr-1.5" />
+          New Organization
         </Button>
       </div>
 
       {organizations.length === 0 ? (
-        <Card className="max-w-lg">
-          <CardContent className="flex flex-col items-center justify-center gap-3 py-12 text-center">
-            <Building2 className="h-10 w-10 text-muted-foreground" />
-            <div>
-              <p className="text-base font-medium">No organizations yet</p>
-              <p className="mt-1 text-sm text-muted-foreground">Create your first workspace to start inviting members, creating projects, and managing billing.</p>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="max-w-lg rounded-lg border border-border/50 bg-card/30 p-12 text-center">
+          <Building2 className="mx-auto h-10 w-10 text-muted-foreground/40 mb-4" />
+          <h3 className="text-sm font-semibold">No organizations yet</h3>
+          <p className="mt-1 text-xs text-muted-foreground">Create your first workspace to get started.</p>
+        </div>
       ) : (
-        <div className="grid gap-4 lg:grid-cols-2">
-          {organizations.map((organization) => {
-            const owner = organization.current_user_role === 'owner'
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-2">
+          {organizations.map((org) => {
+            const owner = org.current_user_role === 'owner'
             return (
-              <Card key={organization.organization_id}>
-                <CardHeader className="pb-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <CardTitle className="text-lg">{organization.name}</CardTitle>
-                      <CardDescription className="mt-1">Created {format_date(organization.created_at)}</CardDescription>
+              <div
+                key={org.organization_id}
+                onClick={() => navigate(core_routes.organization_members(org.organization_id))}
+                className="group relative flex flex-col justify-between rounded-lg border border-border/50 bg-card/40 p-4 hover:border-primary/30 hover:bg-accent/5 transition-all cursor-pointer shadow-sm"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="p-2 rounded-md bg-primary/10 border border-primary/20 group-hover:scale-105 transition-transform">
+                      <Building2 className="h-3.5 w-3.5 text-primary" strokeWidth={2} />
                     </div>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        {owner && <DropdownMenuItem onClick={() => open_dialog('rename', organization)}>Rename</DropdownMenuItem>}
-                        {owner && <DropdownMenuItem onClick={() => open_dialog('transfer', organization)}>Transfer ownership</DropdownMenuItem>}
-                        {!owner && <DropdownMenuItem onClick={() => open_dialog('leave', organization)}>Leave organization</DropdownMenuItem>}
-                        {owner && (
-                          <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => open_dialog('delete', organization)}>
-                            Delete organization
-                          </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    <div className="flex items-center gap-1.5">
+                      {owner && <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-wider py-0 px-1.5 h-4.5 bg-primary/5 text-primary border-primary/20">Owner</Badge>}
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                          <Button variant="ghost" size="icon" className="h-7 w-7 opacity-0 group-hover:opacity-100">
+                            <MoreHorizontal className="h-3.5 w-3.5" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="text-xs">
+                          {owner && <DropdownMenuItem onClick={() => open_dialog('rename', org)}>Rename</DropdownMenuItem>}
+                          {owner && <DropdownMenuItem onClick={() => open_dialog('transfer', org)}>Transfer ownership</DropdownMenuItem>}
+                          {!owner && <DropdownMenuItem onClick={() => open_dialog('leave', org)}>Leave organization</DropdownMenuItem>}
+                          {owner && (
+                            <DropdownMenuItem className="text-destructive font-semibold" onClick={() => open_dialog('delete', org)}>
+                              Delete
+                            </DropdownMenuItem>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex flex-wrap gap-2">
-                    <Badge variant="secondary" className="capitalize">
-                      {organization.current_user_role}
-                    </Badge>
-                    {owner ? (
-                      <Badge className="gap-1"><Crown className="h-3 w-3" /> Owner</Badge>
-                    ) : (
-                      <Badge variant="outline" className="gap-1"><Users className="h-3 w-3" /> Member</Badge>
-                    )}
+                  <h3 className="text-[14px] font-bold tracking-tight text-foreground line-clamp-1">{org.name}</h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <p className="text-[10px] text-muted-foreground font-mono truncate uppercase tracking-widest bg-muted/30 px-1.5 py-0.5 rounded">
+                      {org.organization_id.slice(0, 16)}
+                    </p>
                   </div>
-                  <div className="flex flex-wrap gap-3">
-                    <Button onClick={() => navigate(core_routes.organization_members(organization.organization_id))}>Manage workspace</Button>
-                    <Button variant="outline" onClick={() => navigate(core_routes.organization_billing(organization.organization_id))}>
-                      Billing
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                </div>
+                <div className="mt-5 flex items-center justify-between border-t border-border/20 pt-3">
+                   <div className="flex items-center gap-1.5">
+                      <Users className="h-3 w-3 text-muted-foreground/60" />
+                      <span className="text-[10px] text-muted-foreground/60 font-bold uppercase tracking-wider">Active Workspace</span>
+                   </div>
+                   <ChevronRight className="h-3.5 w-3.5 text-muted-foreground/40 group-hover:text-primary transition-colors" />
+                </div>
+              </div>
             )
           })}
         </div>

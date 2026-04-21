@@ -43,7 +43,7 @@ export function PasswordResetInitiatePage() {
         </p>
       </div>
 
-      <form onSubmit={handle_submit} className="flex flex-col gap-4">
+      <form onSubmit={handle_submit} noValidate className="flex flex-col gap-4">
         <div className="grid gap-2">
           <Label htmlFor="email" className="text-xs font-medium uppercase tracking-wider text-muted-foreground/80">Email</Label>
           <Input
@@ -59,11 +59,11 @@ export function PasswordResetInitiatePage() {
           />
         </div>
 
-        <ErrorAlert message={error} />
-
         <Button type="submit" className="w-full h-10 font-medium bg-primary text-primary-foreground hover:bg-primary/90" disabled={loading}>
           {loading ? <LoadingSpinner size="sm" className="mr-2" /> : "Send reset code"}
         </Button>
+
+        <ErrorAlert message={error} />
       </form>
 
       <Link

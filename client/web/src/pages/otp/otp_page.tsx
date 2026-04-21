@@ -161,7 +161,14 @@ export function OtpPage() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-6">
+      <form 
+        onSubmit={(e) => {
+          e.preventDefault();
+          submit_otp(otp);
+        }} 
+        noValidate 
+        className="flex flex-col gap-6"
+      >
         <div className="flex justify-center">
           <InputOTP
             maxLength={6}
@@ -180,15 +187,15 @@ export function OtpPage() {
           </InputOTP>
         </div>
 
-        <ErrorAlert message={error} />
-
         <Button
+          type="submit"
           className="w-full h-10 font-medium bg-primary text-primary-foreground hover:bg-primary/90"
-          onClick={() => submit_otp(otp)}
           disabled={loading || otp.length < 6}
         >
           {loading ? <LoadingSpinner size="sm" className="mr-2" /> : "Verify"}
         </Button>
+
+        <ErrorAlert message={error} />
 
         <div className="space-y-1.5 text-center text-sm text-muted-foreground">
           <div>
@@ -206,7 +213,7 @@ export function OtpPage() {
             <p className="text-xs text-destructive">{resend_error}</p>
           )}
         </div>
-      </div>
+      </form>
     </div>
   )
 }
