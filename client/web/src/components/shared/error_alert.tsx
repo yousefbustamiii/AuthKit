@@ -39,8 +39,8 @@ export function ErrorAlert({ message }: ErrorAlertProps) {
   if (!message || !visible) return null
 
   return (
-    <div className="pt-1.5 animate-in fade-in slide-in-from-top-1 duration-200">
-      <p className="text-[11px] font-medium text-destructive leading-relaxed text-center">
+    <div className="pt-2 animate-in fade-in slide-in-from-top-1 duration-300">
+      <p className="text-sm font-semibold text-[#ff4d4d] leading-relaxed text-center opacity-100">
         {format_error(message)}
       </p>
     </div>
