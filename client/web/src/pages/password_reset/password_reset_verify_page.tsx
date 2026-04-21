@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp'
 import { ErrorAlert } from '@/components/shared/error_alert'
@@ -42,20 +42,21 @@ export function PasswordResetVerifyPage() {
 
   const handle_otp_change = (value: string) => {
     set_otp(value)
-    if (value.length === 6) {
-      submit_otp(value)
-    }
   }
 
   return (
-    <Card className="shadow-sm">
-      <CardHeader className="space-y-1 pb-4 text-center">
-        <CardTitle className="text-2xl font-semibold">Enter reset code</CardTitle>
-        <CardDescription>
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col items-center gap-2 text-center">
+        <div className="flex h-10 w-10 items-center justify-center rounded-md border bg-background mb-2">
+          <Shield className="h-6 w-6 text-foreground" strokeWidth={1.5} />
+        </div>
+        <h1 className="text-xl font-medium tracking-tight text-foreground">Enter reset code</h1>
+        <p className="text-sm text-muted-foreground leading-relaxed">
           We sent a 6-digit code to <span className="font-medium text-foreground">{email}</span>
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-6">
         <div className="flex justify-center">
           <InputOTP
             maxLength={6}
@@ -77,14 +78,13 @@ export function PasswordResetVerifyPage() {
         <ErrorAlert message={error} />
 
         <Button
-          className="w-full"
+          className="w-full h-10 font-medium bg-primary text-primary-foreground hover:bg-primary/90"
           onClick={() => submit_otp(otp)}
           disabled={loading || otp.length < 6}
         >
-          {loading && <LoadingSpinner size="sm" className="mr-2 text-primary-foreground" />}
-          Verify code
+          {loading ? <LoadingSpinner size="sm" className="mr-2" /> : "Verify code"}
         </Button>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

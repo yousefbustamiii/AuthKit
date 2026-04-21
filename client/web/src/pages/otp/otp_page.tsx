@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   InputOTP,
@@ -121,9 +121,6 @@ export function OtpPage() {
 
   const handle_otp_change = (value: string) => {
     set_otp(value)
-    if (value.length === 6) {
-      submit_otp(value)
-    }
   }
 
   const handle_resend = async () => {
@@ -153,12 +150,18 @@ export function OtpPage() {
   }
 
   return (
-    <Card className="shadow-sm">
-      <CardHeader className="space-y-1 pb-4 text-center">
-        <CardTitle className="text-2xl font-semibold">{config.title}</CardTitle>
-        <CardDescription>{config.description(email)}</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col items-center gap-2 text-center">
+        <div className="flex h-10 w-10 items-center justify-center rounded-md border bg-background mb-2">
+          <Shield className="h-6 w-6 text-foreground" strokeWidth={1.5} />
+        </div>
+        <h1 className="text-xl font-medium tracking-tight text-foreground">{config.title}</h1>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          {config.description(email)}
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-6">
         <div className="flex justify-center">
           <InputOTP
             maxLength={6}
@@ -180,12 +183,11 @@ export function OtpPage() {
         <ErrorAlert message={error} />
 
         <Button
-          className="w-full"
+          className="w-full h-10 font-medium bg-primary text-primary-foreground hover:bg-primary/90"
           onClick={() => submit_otp(otp)}
           disabled={loading || otp.length < 6}
         >
-          {loading && <LoadingSpinner size="sm" className="mr-2 text-primary-foreground" />}
-          Verify
+          {loading ? <LoadingSpinner size="sm" className="mr-2" /> : "Verify"}
         </Button>
 
         <div className="space-y-1.5 text-center text-sm text-muted-foreground">
@@ -195,7 +197,7 @@ export function OtpPage() {
               type="button"
               onClick={handle_resend}
               disabled={cooldown > 0}
-              className="font-medium text-foreground underline-offset-4 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+              className="font-medium text-foreground underline-offset-4 hover:underline disabled:cursor-not-allowed transition-colors disabled:opacity-50"
             >
               {cooldown > 0 ? `Resend in ${cooldown}s` : 'Resend'}
             </button>
@@ -204,7 +206,7 @@ export function OtpPage() {
             <p className="text-xs text-destructive">{resend_error}</p>
           )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

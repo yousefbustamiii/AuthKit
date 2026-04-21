@@ -44,7 +44,7 @@ export function GoogleOAuthButton() {
     <Button
       type="button"
       variant="outline"
-      className="w-full"
+      className="w-full text-foreground"
       onClick={handle_click}
       disabled={loading}
     >
@@ -71,7 +71,7 @@ export function GitHubOAuthButton() {
     <Button
       type="button"
       variant="outline"
-      className="w-full"
+      className="w-full text-foreground"
       onClick={handle_click}
       disabled={loading}
     >

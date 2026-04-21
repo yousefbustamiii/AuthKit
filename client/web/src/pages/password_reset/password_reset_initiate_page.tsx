@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { ArrowLeft, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -33,45 +32,47 @@ export function PasswordResetInitiatePage() {
   }
 
   return (
-    <Card className="shadow-sm">
-      <CardHeader className="space-y-1 pb-4">
-        <CardTitle className="text-2xl font-semibold">Reset your password</CardTitle>
-        <CardDescription>
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col items-center gap-2 text-center">
+        <div className="flex h-10 w-10 items-center justify-center rounded-md border bg-background mb-2">
+          <Shield className="h-6 w-6 text-foreground" strokeWidth={1.5} />
+        </div>
+        <h1 className="text-xl font-medium tracking-tight text-foreground">Reset your password</h1>
+        <p className="text-sm text-muted-foreground leading-relaxed">
           Enter your email and we&apos;ll send you a verification code.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <form onSubmit={handle_submit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              value={email}
-              onChange={(e) => set_email(e.target.value)}
-              required
-              autoComplete="email"
-              autoFocus
-            />
-          </div>
+        </p>
+      </div>
 
-          <ErrorAlert message={error} />
+      <form onSubmit={handle_submit} className="flex flex-col gap-4">
+        <div className="grid gap-2">
+          <Label htmlFor="email" className="text-xs font-medium uppercase tracking-wider text-muted-foreground/80">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="m@example.com"
+            value={email}
+            onChange={(e) => set_email(e.target.value)}
+            required
+            autoComplete="email"
+            className="h-10 bg-background text-foreground"
+            autoFocus
+          />
+        </div>
 
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading && <LoadingSpinner size="sm" className="mr-2 text-primary-foreground" />}
-            Send reset code
-          </Button>
-        </form>
+        <ErrorAlert message={error} />
 
-        <Link
-          to={ROUTES.LOGIN}
-          className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground underline-offset-4 hover:underline"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Back to sign in
-        </Link>
-      </CardContent>
-    </Card>
+        <Button type="submit" className="w-full h-10 font-medium bg-primary text-primary-foreground hover:bg-primary/90" disabled={loading}>
+          {loading ? <LoadingSpinner size="sm" className="mr-2" /> : "Send reset code"}
+        </Button>
+      </form>
+
+      <Link
+        to={ROUTES.LOGIN}
+        className="flex items-center justify-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <ArrowLeft className="h-3.5 w-3.5" />
+        Back to sign in
+      </Link>
+    </div>
   )
 }

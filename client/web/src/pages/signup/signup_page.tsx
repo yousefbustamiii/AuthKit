@@ -47,10 +47,10 @@ export function SignupPage() {
         <div className="flex h-10 w-10 items-center justify-center rounded-md border bg-background mb-2">
           <Shield className="h-6 w-6 text-foreground" strokeWidth={1.5} />
         </div>
-        <h1 className="text-xl font-medium tracking-tight">Create your account</h1>
+        <h1 className="text-xl font-medium tracking-tight text-foreground">Create your account</h1>
         <p className="text-sm text-muted-foreground">
           Already have an account?{' '}
-          <Link to={ROUTES.LOGIN} className="underline underline-offset-4 font-medium hover:text-foreground">
+          <Link to={ROUTES.LOGIN} className="underline underline-offset-4 font-medium hover:text-foreground transition-colors">
             Sign in
           </Link>
         </p>
@@ -67,7 +67,7 @@ export function SignupPage() {
             onChange={(e) => set_email(e.target.value)}
             required
             autoComplete="email"
-            className="h-10"
+            className="h-10 bg-background text-foreground"
             autoFocus
           />
         </div>
@@ -82,7 +82,7 @@ export function SignupPage() {
               onChange={(e) => set_password(e.target.value)}
               required
               autoComplete="new-password"
-              className="h-10 pr-10"
+              className="h-10 pr-10 bg-background text-foreground"
             />
             <button
               type="button"
@@ -104,20 +104,20 @@ export function SignupPage() {
             onChange={(e) => set_confirm_password(e.target.value)}
             required
             autoComplete="new-password"
-            className="h-10"
+            className="h-10 bg-background text-foreground"
           />
         </div>
 
         <ErrorAlert message={error} />
 
-        <Button type="submit" className="w-full h-10 font-medium" disabled={loading}>
+        <Button type="submit" className="w-full h-10 font-medium bg-primary text-primary-foreground hover:bg-primary/90" disabled={loading}>
           {loading ? <LoadingSpinner size="sm" className="mr-2" /> : "Create Account"}
         </Button>
       </form>
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
+          <span className="w-full border-t border-border" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
           <span className="bg-background px-2 text-muted-foreground font-medium tracking-widest">Or</span>
@@ -129,7 +129,7 @@ export function SignupPage() {
         <GoogleOAuthButton />
       </div>
 
-      <p className="px-8 text-center text-[11px] leading-relaxed text-muted-foreground">
+      <p className="px-8 text-center text-[11px] leading-relaxed text-muted-foreground/60">
         By clicking continue, you agree to our{' '}
         <a href="#" className="underline underline-offset-4 hover:text-foreground">
           Terms of Service

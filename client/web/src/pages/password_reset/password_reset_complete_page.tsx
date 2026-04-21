@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Shield } from 'lucide-react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -47,58 +46,62 @@ export function PasswordResetCompletePage() {
   }
 
   return (
-    <Card className="shadow-sm">
-      <CardHeader className="space-y-1 pb-4">
-        <CardTitle className="text-2xl font-semibold">Set new password</CardTitle>
-        <CardDescription>Choose a strong password for your account.</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handle_submit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="new_password">New password</Label>
-            <div className="relative">
-              <Input
-                id="new_password"
-                type={show_password ? 'text' : 'password'}
-                placeholder="••••••••"
-                value={new_password}
-                onChange={(e) => set_new_password(e.target.value)}
-                required
-                autoComplete="new-password"
-                autoFocus
-                className="pr-10"
-              />
-              <button
-                type="button"
-                onClick={() => set_show_password(!show_password)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                tabIndex={-1}
-              >
-                {show_password ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </button>
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="confirm_password">Confirm new password</Label>
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col items-center gap-2 text-center">
+        <div className="flex h-10 w-10 items-center justify-center rounded-md border bg-background mb-2">
+          <Shield className="h-6 w-6 text-foreground" strokeWidth={1.5} />
+        </div>
+        <h1 className="text-xl font-medium tracking-tight text-foreground">Set new password</h1>
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          Choose a strong password for your account.
+        </p>
+      </div>
+
+      <form onSubmit={handle_submit} className="flex flex-col gap-4">
+        <div className="grid gap-2">
+          <Label htmlFor="new_password" title="New Password"  className="text-xs font-medium uppercase tracking-wider text-muted-foreground/80">New password</Label>
+          <div className="relative">
             <Input
-              id="confirm_password"
+              id="new_password"
               type={show_password ? 'text' : 'password'}
               placeholder="••••••••"
-              value={confirm_password}
-              onChange={(e) => set_confirm_password(e.target.value)}
+              value={new_password}
+              onChange={(e) => set_new_password(e.target.value)}
               required
               autoComplete="new-password"
+              autoFocus
+              className="h-10 pr-10 bg-background text-foreground"
             />
+            <button
+              type="button"
+              onClick={() => set_show_password(!show_password)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              tabIndex={-1}
+            >
+              {show_password ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
           </div>
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="confirm_password" title="Confirm Password"  className="text-xs font-medium uppercase tracking-wider text-muted-foreground/80">Confirm new password</Label>
+          <Input
+            id="confirm_password"
+            type={show_password ? 'text' : 'password'}
+            placeholder="••••••••"
+            value={confirm_password}
+            onChange={(e) => set_confirm_password(e.target.value)}
+            required
+            autoComplete="new-password"
+            className="h-10 bg-background text-foreground"
+          />
+        </div>
 
-          <ErrorAlert message={error} />
+        <ErrorAlert message={error} />
 
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading && <LoadingSpinner size="sm" className="mr-2 text-primary-foreground" />}
-            Update password
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+        <Button type="submit" className="w-full h-10 font-medium bg-primary text-primary-foreground hover:bg-primary/90" disabled={loading}>
+          {loading ? <LoadingSpinner size="sm" className="mr-2" /> : "Update password"}
+        </Button>
+      </form>
+    </div>
   )
 }
